@@ -1,5 +1,5 @@
 const template = document.createElement("template");
-const pageContents = await fetch("static/num-counter/num-counter.html");
+const pageContents = await fetch("static/js/num-counter/num-counter.html");
 template.innerHTML = await pageContents.text();
 let count = 0;
 export class NumCounter extends HTMLElement {

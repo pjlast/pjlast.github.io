@@ -27,6 +27,8 @@ export class NumCounter extends HTMLElement {
             counterDigitCurrent.innerHTML = `<strong>${count}</strong>`;
             counterDigit.style.animationName = "none";
             counterDigitCurrent.style.animationName = "none";
+            void counterDigit.offsetWidth;
+            void counterDigitCurrent.offsetWidth;
             counterDigit.style.animationName = "animUp2";
             counterDigitCurrent.style.animationName = "animUp1";
         });

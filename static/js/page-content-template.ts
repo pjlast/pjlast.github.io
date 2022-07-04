@@ -2,7 +2,13 @@ const template = document.createElement("template");
 template.innerHTML = `
 <page-content></page-content>`;
 
-import "./index-page/index-page.js";
+const path = window.location.pathname;
+if (path === "/") {
+  // handle index route
+  import("./index/component.js");
+} else {
+  import(`.${path}/component.js`);
+}
 
 export class PageContentTemplate extends HTMLElement {
   connectedCallback() {

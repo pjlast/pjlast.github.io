@@ -1,5 +1,5 @@
 const template = document.createElement("template");
-const pageContents = await fetch("static/js/index-page/index-page.html");
+const pageContents = await fetch("static/js/index/index-page.html");
 template.innerHTML = await pageContents.text();
 
 import "../num-counter/num-counter.js";

@@ -1,31 +1,32 @@
 <link href="static/css/app.css" rel="stylesheet" type="text/css" />
 
-<head>
-  <title>About</title>
-  <meta name="description" content="About this app" />
-</head>
-
 <div class="content">
   <h1>About this app</h1>
 
   <p>
-    This is a <a href="https://kit.svelte.dev">SvelteKit</a> app. You can make
-    your own by typing the following into your command line and following the
-    prompts:
+    This "app" uses a make-shift client-side router, which you can find
+    <a
+      href="https://github.com/pjlast/pjlast.github.io/blob/main/static/js/page-content-template.ts"
+      >here</a
+    >.
   </p>
 
-  <pre>npm init svelte</pre>
+  <pre>
+const path = window.location.pathname;
+if (path === "/") {
+  // handle index route
+  import("./index/component.js");
+} else {
+  import(`.${path}/component.js`);
+}</pre
+  >
 
   <p>
-    The page you're looking at is purely static HTML, with no client-side
-    interactivity needed. Because of that, we don't need to load any JavaScript.
-    Try viewing the page's source, or opening the devtools network panel and
-    reloading.
-  </p>
-
-  <p>
-    The <a href="/todos">TODOs</a> page illustrates SvelteKit's data loading and
-    form handling. Try using it with JavaScript disabled!
+    By reading the URL path, we can dynamically import a web component that
+    implements page-content, which is then inserted into the HTML template. In
+    this GitHub Pages app, each page will still have its own .html file, because
+    that is just how Git Hub Pages works. However, in a server where you would
+    traditionally do templating, you can serve the same page for all routes.
   </p>
 </div>
 

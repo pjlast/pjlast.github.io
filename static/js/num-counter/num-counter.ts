@@ -4,52 +4,67 @@ template.innerHTML = await pageContents.text();
 
 let count = 0;
 
+function playAnimation(el: HTMLElement, animationName: string) {
+  el.style.animationName = "none";
+  void el.offsetWidth;
+  el.style.animationName = animationName;
+}
+
+function increaseCounter(
+  previousDigit: HTMLElement,
+  currentDigit: HTMLElement
+): () => void {
+  return () => {
+    count += 1;
+    previousDigit.textContent = `${count - 1}`;
+    currentDigit.textContent = `${count}`;
+
+    playAnimation(previousDigit, "animDown2");
+    playAnimation(currentDigit, "animDown1");
+  };
+}
+
+function decreaseCounter(
+  previousDigit: HTMLElement,
+  currentDigit: HTMLElement
+): () => void {
+  return () => {
+    count -= 1;
+    previousDigit.textContent = `${count + 1}`;
+    currentDigit.textContent = `${count}`;
+
+    playAnimation(previousDigit, "animUp2");
+    playAnimation(currentDigit, "animUp1");
+  };
+}
+
 export class NumCounter extends HTMLElement {
   connectedCallback() {
     const shadowRoot = this.attachShadow({ mode: "open" });
     shadowRoot.appendChild(template.content.cloneNode(true));
 
+    // Get DOM elements
     const counterDigit = shadowRoot.getElementById("counter-digit")!;
     const counterDigitCurrent = shadowRoot.getElementById(
       "counter-digit-current"
     )!;
-
     const increaseButton = shadowRoot.getElementById(
       "increase-counter"
     )! as HTMLButtonElement;
-
-    increaseButton.addEventListener("click", () => {
-      counterDigit.innerHTML = `<strong>${count}</strong>`;
-      count += 1;
-      counterDigitCurrent.innerHTML = `<strong>${count}</strong>`;
-
-      counterDigit.style.animationName = "none";
-      counterDigitCurrent.style.animationName = "none";
-
-      void counterDigit.offsetWidth;
-      void counterDigitCurrent.offsetWidth;
-
-      counterDigit.style.animationName = "animDown2";
-      counterDigitCurrent.style.animationName = "animDown1";
-    });
-
     const decreaseButton = shadowRoot.getElementById(
       "decrease-counter"
     )! as HTMLButtonElement;
-    decreaseButton.addEventListener("click", () => {
-      counterDigit.innerHTML = `<strong>${count}</strong>`;
-      count -= 1;
-      counterDigitCurrent.innerHTML = `<strong>${count}</strong>`;
 
-      counterDigit.style.animationName = "none";
-      counterDigitCurrent.style.animationName = "none";
+    // Add click events
+    increaseButton.addEventListener(
+      "click",
+      increaseCounter(counterDigit, counterDigitCurrent)
+    );
 
-      void counterDigit.offsetWidth;
-      void counterDigitCurrent.offsetWidth;
-
-      counterDigit.style.animationName = "animUp2";
-      counterDigitCurrent.style.animationName = "animUp1";
-    });
+    decreaseButton.addEventListener(
+      "click",
+      decreaseCounter(counterDigit, counterDigitCurrent)
+    );
   }
 }
 

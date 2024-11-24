@@ -1,0 +1,8 @@
+body {
+    display: flex;
+    gap: 1rem;
+}
+
+[aria-current="page"] {
+    font-weight: bold;
+}

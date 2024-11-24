@@ -3,6 +3,7 @@
     font-size: calc(1rem + .5vw);
     background-color: #fefefe;
     color: #111;
+    line-height: 1.4;
 }
 
 h1,h2,h3,h4 {
@@ -20,15 +21,17 @@ h2 {
 
 html {
     display: flex;
-    height: 100%;
 }
 
 body {
     width: 80%;
-    height: 100%;
     margin: auto;
     display: flex;
     gap: 1rem;
+}
+
+nav {
+    width: 20%;
 }
 
 [aria-current="page"] {
@@ -40,11 +43,14 @@ nav ul {
     list-style: inside;
     font-family: sans-serif;
     text-transform: uppercase;
+    font-size: 1.25vw;
 }
 
 main {
+    width: 80%;
     padding: 2.25rem;
     border-left: .125rem solid;
+    min-height: 100vh;
 }
 
 p {
@@ -57,4 +63,55 @@ a {
 
 [href] {
     text-decoration-thickness: .125em;
+}
+
+time {
+    font-style: italic;
+}
+
+ul[role="list"] {
+    list-style: none;
+}
+
+.work-history {
+    padding: 0;
+
+    > li:has(+ li) {
+        border-left: .125rem solid;
+        padding-bottom: 1rem;
+    }
+
+    > li:last-of-type {
+        padding-left: .125rem;
+    }
+
+    article {
+        display: flex;
+        gap: 1rem;
+
+        img {
+            height: 2rem;
+            width: 2rem;
+            border-style: solid;
+            border-width: .125rem;
+            border-radius: 100%;
+            margin-left: -1.1875em;
+        }
+
+        h1 {
+            font-size: 1rem;
+            margin: 0;
+            margin-bottom: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        h2 {
+            font-size: 0.8rem;
+            margin: 0;
+        }
+
+        header p {
+            font-size: 0.8rem;
+        }
+    }
 }

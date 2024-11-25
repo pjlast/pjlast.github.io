@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>pjlast</title>
+
+    <link rel="stylesheet" href="../css/style.css" type="text/css" />
+    <link href="../css/prism.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <nav>
+      <h2>Petri-Johan Last</h2>
+      <ul>
+        <li><a href="../index.html" aria-current="page">About</a></li>
+        <li><a href="index.html">Writing</a></li>
+        <li><a href="../work-history/index.html">Work history</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <h1>Hidden simplicity</h1>
+      <p><time datetime="2024-11-25">25 November 2024</time></p>
+
+      <p>
+        I recently decided to try and simplify a hairy piece of code at work.
+        It's the kind of organic, whole-grain, hormone free, natural code you'll
+        only find in production critical work software.
+      </p>
+
+      <p>
+        Code like this comes from many years of minor edits by many different
+        people. This specific file has been edited by 23 people over the span of
+        6 years, for reasons ranging from feature additions, files being moved
+        around, bug fixes, customer-specific requests, etc.
+      </p>
+
+      <p>
+        Here's a stripped down version of the code (I removed some comments for
+        readability):
+      </p>
+
+      <pre><code class="language-go">func NewMiddleware(db database.DB, serviceType, authPrefix string, isAPIHandler bool, next http.Handler) http.Handler {
+	oauthFlowHandler := http.StripPrefix(authPrefix, newOAuthFlowHandler(serviceType))
+	traceFamily := fmt.Sprintf("oauth.%s", serviceType)
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// This span should be manually finished before delegating to the next handler or
+		// redirecting.
+		span, ctx := trace.New(r.Context(), traceFamily+".middleware")
+		span.SetAttributes(attribute.Bool("isAPIHandler", isAPIHandler))
+
+		// Delegate to the auth flow handler
+		if !isAPIHandler &amp&amp strings.HasPrefix(r.URL.Path, authPrefix+"/") {
+			span.AddEvent("delegate to auth flow handler")
+			r = withOAuthExternalClient(r)
+			span.End()
+			oauthFlowHandler.ServeHTTP(w, r)
+			return
+		}
+
+		// If the actor is authenticated and not performing an OAuth flow, then proceed to
+		// next.
+		if actor.FromContext(ctx).IsAuthenticated() {
+			span.AddEvent("authenticated, proceeding to next")
+			span.End()
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// If there is only one auth provider configured, the single auth provider is a OAuth
+		// instance, it's an app request, the sign-out cookie is not present, and access requests are disabled, redirect to sign-in immediately.
+		//
+		// For sign-out requests (sign-out cookie is  present), the user will be redirected to the SG login page.
+		// Note: For instances that are conf.AuthPublic(), we don't redirect to sign-in automatically, as that would
+		// lock out unauthenticated access.
+		pc := getExactlyOneOAuthProvider(!r.URL.Query().Has("sourcegraph-operator"))
+		if !conf.AuthPublic() &amp&amp pc != nil &amp&amp !isAPIHandler &amp&amp pc.AuthPrefix == authPrefix &amp&amp !session.HasSignOutCookie(r) &amp&amp isHuman(r) &amp&amp !conf.IsAccessRequestEnabled() {
+			span.AddEvent("redirect to signin")
+			v := make(url.Values)
+			v.Set("redirect", auth.SafeRedirectURL(r.URL.String()))
+			v.Set("pc", pc.ConfigID().ID)
+			span.End()
+			http.Redirect(w, r, authPrefix+"/login?"+v.Encode(), http.StatusFound)
+
+			return
+		}
+		span.AddEvent("proceeding to next")
+		span.End()
+		next.ServeHTTP(w, r)
+	})
+}</code></pre>
+
+      <p>
+        Not that bad. But let's break down the function signature. We have 3
+        parameters that are of interest:
+      </p>
+      <ol>
+        <li>
+          <pre><code>serviceType</code></pre>
+        </li>
+        <li>
+          <pre><code>authPrefix</code></pre>
+        </li>
+        <li>
+          <pre><code>isAPIHandler</code></pre>
+        </li>
+      </ol>
+      <p>
+        <code>serviceType</code> refers to the name of the auth-provider,
+        <code>authPrefix</code> is the URL path for this middleware, and
+        <code>isAPIHandler</code> determines whether or not this handler is for
+        the UI or API calls.
+      </p>
+      <p>
+        My plan was to get rid of all of these. <code>authPrefix</code> can be
+        derived from <code>serviceType</code> (something that wasn't necessarily
+        true when the code was initially written, but it did turn out that way).
+        And since Go added URL wildcard patterns in 1.22,
+        <code>serviceType</code> can easily be fetched from the request path. So
+        that leaves <code>isAPIHandler</code>
+      </p>
+
+      <p>
+        I made 2 copies of the function: one where <code>isAPIHandler</code> is
+        always <code>true</code>, and one where it's always <code>false</code>.
+        There are two checks in the code:
+      </p>
+
+      <pre><code class="language-go">if !isAPIHandler &amp&amp strings.HasPrefix(r.URL.Path, authPrefix+"/") {</code></pre>
+
+      <p>and this monstrosity:</p>
+
+      <pre><code class="language-go">if !conf.AuthPublic() &amp&amp pc != nil &amp&amp !isAPIHandler &amp&amp pc.AuthPrefix == authPrefix &amp&amp !session.HasSignOutCookie(r) &amp&amp isHuman(r) &amp&amp !conf.IsAccessRequestEnabled() {</code></pre>
+
+      <p>
+        , both of which evaluate to <code>false</code> when
+        <code>isAPIHandler</code> is <code>true</code>. So, let's take them out.
+      </p>
+
+      <pre><code class="language-go">func NewAPIMiddleware(db database.DB, serviceType, authPrefix string, next http.Handler) http.Handler {
+	oauthFlowHandler := http.StripPrefix(authPrefix, newOAuthFlowHandler(serviceType))
+	traceFamily := fmt.Sprintf("oauth.%s", serviceType)
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		span, ctx := trace.New(r.Context(), traceFamily+".middleware")
+		span.SetAttributes(attribute.Bool("isAPIHandler", true))
+
+		if actor.FromContext(ctx).IsAuthenticated() {
+			span.AddEvent("authenticated, proceeding to next")
+			span.End()
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		span.AddEvent("proceeding to next")
+		span.End()
+		next.ServeHTTP(w, r)
+	})
+}</code></pre>
+
+      <p>
+        Alright, big chunk of the function is gone now. This leaves us with one
+        last condition: if the user is authenticated, serve the next middleware,
+        otherwise... serve the next middleware? Cool, so we can drop that check
+        as well!
+      </p>
+
+      <pre><code class="language-go">func NewAPIMiddleware(db database.DB, serviceType, authPrefix string, next http.Handler) http.Handler {
+	oauthFlowHandler := http.StripPrefix(authPrefix, newOAuthFlowHandler(serviceType))
+	traceFamily := fmt.Sprintf("oauth.%s", serviceType)
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		span, ctx := trace.New(r.Context(), traceFamily+".middleware")
+		span.SetAttributes(attribute.Bool("isAPIHandler", true))
+
+		span.AddEvent("proceeding to next")
+		span.End()
+		next.ServeHTTP(w, r)
+	})
+}</code></pre>
+
+      <p>So now we have a middleware that, uhm, calls the next middleware?</p>
+
+      <pre><code class="language-go">func NewAPIMiddleware() http.Handler {
+        return next
+	)
+}</code></pre>
+
+      <p>So I just deleted the function altogether.</p>
+
+      <p>
+        Now in retrospect, this makes perfect sense. This function is supposed
+        to facilitate an OAuth login flow, which is only possible through the
+        UI. There's no auth flow for API calls, so it makes sense that it's just
+        a fallthrough. But would you have ever guessed that from looking at the
+        initial code? Especially since you'd probably never deliberately be
+        looking at this code, and it sits between a whole lot of other
+        middleware that look fairly similar.
+      </p>
+    </main>
+    <script src="../js/prism.js"></script>
+  </body>
+</html>

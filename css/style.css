@@ -30,12 +30,19 @@ body {
     gap: 1rem;
 }
 
+main {
+    width: 80%;
+    padding: 2.25rem;
+    border-left: .125rem solid;
+    min-height: 100vh;
+}
+
 nav {
     width: 20%;
 }
 
-[aria-current="page"] {
-    font-weight: bold;
+nav h2 {
+    font-size: 1.5vw;
 }
 
 nav ul {
@@ -46,15 +53,50 @@ nav ul {
     font-size: 1.25vw;
 }
 
-main {
-    width: 80%;
-    padding: 2.25rem;
-    border-left: .125rem solid;
-    min-height: 100vh;
+@media (max-width:500px) {
+    body {
+        display: flex;
+        flex-direction: column;
+        margin: 1.5rem;
+        width: 100%;
+    }
+
+    main {
+        border-left: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    nav {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    nav h2 {
+        font-size: 1rem;
+        margin: auto;
+    }
+
+    nav ul {
+        font-size: 1rem;
+        display: flex;
+        gap: 1rem;
+        margin: auto;
+    }
+    
+    nav li {
+        list-style: none;
+    }
 }
 
+[aria-current="page"] {
+    font-weight: bold;
+}
+
+
 p {
-    max-width: 60ch;
+    max-width: 70ch;
 }
 
 a {
@@ -71,6 +113,20 @@ time {
 
 ul[role="list"] {
     list-style: none;
+}
+
+ul.writing {
+    article {
+        h1 {
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 0.8rem;
+        }
+    }
 }
 
 .work-history {
@@ -114,4 +170,30 @@ ul[role="list"] {
             font-size: 0.8rem;
         }
     }
+}
+
+.about {
+    display: flex;
+    gap: 1rem;
+
+    .profile {
+        display: flex;
+        align-items: center;
+        max-width: 20%;
+    }
+
+    img {
+        width: 100%;
+        border-radius: 10%;
+        border: .125rem solid;
+    }
+}
+
+pre {
+    tab-size: 2;
+    font-size: 0.8rem;
+}
+
+code {
+    font-size: 0.8rem;
 }

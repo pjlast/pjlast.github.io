@@ -152,6 +152,7 @@ ul.writing {
     gap: 1rem;
 
     img {
+      background-color: white;
       height: 2rem;
       width: 2rem;
       border-style: solid;
@@ -185,6 +186,7 @@ ul.writing {
 
     article {
       img {
+        background-color: white;
         height: 2rem;
         width: 2rem;
         border-style: solid;

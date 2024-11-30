@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"target": "esnext",
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"allowUnreachableCode": false,
+		"alwaysStrict": true,
+		"allowUnusedLabels": false,
+		"exactOptionalPropertyTypes" :true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"strict": true,
+		"useUnknownInCatchVariables": true
+	}
+}

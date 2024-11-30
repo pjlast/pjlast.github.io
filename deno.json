@@ -1,4 +1,9 @@
 {
+	"compilerOptions": {
+		"lib": [
+			"dom"
+		]
+	},
 	"lint": {
 		"exclude": ["js/prism.js"]
 	}

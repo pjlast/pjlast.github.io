@@ -1,71 +1,51 @@
-"use strict";
-
 class PostComment extends HTMLElement {
   constructor() {
     super();
   }
+
   connectedCallback() {
     this.attachShadow({ mode: "open" });
     this.innerHTML = "Hello";
   }
 }
 
-/** 
- * @typedef {{
- *   thread: {
- *     post: {
- *       author: {
- *         avatar: string,
- *         displayName: string
- *       },
- *       record: {
- *         text: string
- *       }
- *     },
- *     replies: []
- *   }
- * }} BlueskyThread
- */
+type BlueskyPostThread = {
+  thread: {
+    post: {
+      author: {
+        avatar: string,
+        displayName: string
+      },
+      record: {
+        text: string
+      }
+    },
+    replies: []
+  }
+}
 
-/**
- * Fetches a post from the provided profile.
- *
- * @param {string} profile Profile the post belongs to.
- * @param {string} postId ID of the post.
- *
- * @returns {Promise<BlueskyThread>} The specified post with its thread.
- *
- * @throws Will throw if an error occurs.
- */
-async function getBlueskyPostThread(profile, postId) {
-  /** @type {Response} */
-  let response;
+async function getBlueskyPostThread(profile: string, postId: string): Promise<BlueskyPostThread> {
   try {
     const url = new URL(
       "/xrpc/app.bsky.feed.getPostThread",
       "https://public.api.bsky.app"
     );
     url.search = `?uri=${encodeURIComponent(`at://${profile}/app.bsky.feed.post/${postId}`)}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status} ${response.statusText} `);
+    }
+    let body: BlueskyPostThread;
+    try {
+      body = await response.json()
+    } catch (error) {
+      throw new Error(`Failed to parse JSON: ${error} `);
+    }
 
-    response = await fetch(url);
+    return body;
   } catch (error) {
     throw new Error(`Fetch error: ${error} `);
   }
-
-  if (!response.ok) {
-    throw new Error(`HTTP error: ${response.status} ${response.statusText} `);
-  }
-
-  /** @type {BlueskyThread} */
-  let body;
-  try {
-    body = await response.json();
-  }
-  catch (error) {
-    throw new Error(`Failed to parse JSON: ${error} `);
-  }
-
-  return body;
 }
 
 class Post extends HTMLElement {
@@ -74,7 +54,7 @@ class Post extends HTMLElement {
   }
 
   async connectedCallback() {
-    const shadow = this.attachShadow({ mode: "open" });
+    const shadow = this.attachShadow({ mode: "closed" });
 
     const profile = this.getAttribute("profile");
     if (profile === null) {
@@ -88,14 +68,12 @@ class Post extends HTMLElement {
       return;
     }
 
-    /** @type {BlueskyThread} */
-    let postThread;
+    let postThread: BlueskyPostThread;
     try {
       postThread = await getBlueskyPostThread(profile, postId);
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error while fetching thread:", error);
-      return;
+      return
     }
 
     const name = document.createElement("h2");
@@ -109,6 +87,7 @@ class Post extends HTMLElement {
 
     const postContent = document.createElement("p");
     postContent.textContent = postThread.thread.post.record.text;
+
     shadow.append(postContent);
 
     console.log(postThread);

@@ -35,6 +35,7 @@ body {
 
 main {
   width: 80%;
+  max-width: 70ch;
   padding: 2.25rem;
   border-left: 0.125rem solid;
   min-height: 100vh;
@@ -103,10 +104,6 @@ nav ul {
 
 [aria-current="page"] {
   font-weight: bold;
-}
-
-p {
-  max-width: 70ch;
 }
 
 a {
@@ -222,5 +219,4 @@ ul.writing {
 aside {
   font-size: 0.8em;
   font-style: italic;
-  max-width: 70ch;
 }

@@ -38,6 +38,10 @@ main {
   padding: 2.25rem;
   border-left: 0.125rem solid;
   min-height: 100vh;
+
+  img {
+    width: 100%;
+  }
 }
 
 nav {

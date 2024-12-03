@@ -218,4 +218,5 @@ ul.writing {
 aside {
   font-size: 0.8em;
   font-style: italic;
+  max-width: 70ch;
 }

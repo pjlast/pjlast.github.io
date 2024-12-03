@@ -214,3 +214,8 @@ ul.writing {
     border: 0.125rem solid;
   }
 }
+
+aside {
+  font-size: 0.8em;
+  font-style: italic;
+}

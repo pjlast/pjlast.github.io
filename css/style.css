@@ -1,222 +1,162 @@
 :root {
-  font-family: serif;
-  font-size: calc(1rem + 0.5vw);
-  background-color: #fefefe;
-  color: #111;
-  line-height: 1.4;
+	font-family: serif;
+	font-size: calc(1rem + 0.5vw);
+	background-color: #fefefe;
+	color: #111;
+	line-height: 1.4;
 }
 
 h1,
 h2,
 h3,
 h4 {
-  font-family: sans-serif;
-  text-transform: uppercase;
+	font-family: sans-serif;
+	text-transform: uppercase;
 }
 
 h1 {
-  font-size: 2rem;
+	font-size: 2rem;
 }
 
 h2 {
-  font-size: 1.25rem;
-}
-
-html {
-  display: flex;
+	font-size: 1.25rem;
 }
 
 body {
-  width: 80%;
-  margin: auto;
-  display: flex;
-  gap: 1rem;
+	margin: 0;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
 main {
-  width: 80%;
-  max-width: 70ch;
-  padding: 2.25rem;
-  border-left: 0.125rem solid;
-  min-height: 100vh;
+	max-width: 70ch;
+	min-height: 100vh;
+	margin: auto;
+	padding: 0.5rem;
 
-  img {
-    width: 100%;
-  }
+	img {
+		width: 100%;
+	}
 }
 
 nav {
-  width: 20%;
-}
+	margin: auto;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
 
-nav h2 {
-  font-size: 1.5vw;
-}
+	ul {
+		display: flex;
+		gap: 0.5rem;
+		margin: auto;
+		text-transform: uppercase;
+		font-family: sans-serif;
+		list-style: inside;
+		padding-left: 0;
+	}
 
-nav ul {
-  padding: 0;
-  list-style: inside;
-  font-family: sans-serif;
-  text-transform: uppercase;
-  font-size: 1.25vw;
-}
-
-@media (max-width: 500px) {
-  body {
-    display: flex;
-    flex-direction: column;
-    padding: 0.5rem;
-    width: 100%;
-  }
-
-  main {
-    border-left: 0;
-    padding: 0;
-    width: 100%;
-  }
-
-  nav {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  nav h2 {
-    font-size: 1rem;
-    margin: auto;
-  }
-
-  nav ul {
-    font-size: 0.8rem;
-    display: flex;
-    gap: 0.5rem;
-    margin: auto;
-  }
-
-  nav li {
-    list-style: none;
-  }
+	h2 {
+		font-size: calc(1em + 0.5vw);
+	}
 }
 
 [aria-current="page"] {
-  font-weight: bold;
+	font-weight: bold;
 }
 
 a {
-  color: inherit;
+	color: inherit;
 }
 
 [href] {
-  text-decoration-thickness: 0.125em;
+	text-decoration-thickness: 0.125em;
 }
 
 time {
-  font-style: italic;
+	font-style: italic;
 }
 
 ul[role="list"] {
-  list-style: none;
+	list-style: none;
 }
 
 ul.writing {
-  article {
-    h1 {
-      font-size: 1rem;
-      margin-top: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
+	article {
+		h1 {
+			font-size: 1rem;
+			margin-top: 0.5rem;
+			margin-bottom: 0.5rem;
+		}
 
-    header p {
-      font-size: 0.8rem;
-    }
-  }
+		header p {
+			font-size: 0.8rem;
+		}
+	}
 }
 
 .work-history {
-  padding: 0;
+	padding: 0;
 
-  > li:has(+ li) {
-    border-left: 0.125rem solid;
-    padding-bottom: 1rem;
-  }
+	>li:has(+ li) {
+		border-left: 0.125rem solid;
+		padding-bottom: 1rem;
+	}
 
-  > li:last-of-type {
-    padding-left: 0.125rem;
-  }
+	>li:last-of-type {
+		padding-left: 0.125rem;
+	}
 
-  article {
-    display: flex;
-    gap: 1rem;
+	article {
+		display: flex;
+		gap: 1rem;
 
-    img {
-      background-color: white;
-      height: 2rem;
-      width: 2rem;
-      border-style: solid;
-      border-width: 0.125rem;
-      border-radius: 100%;
-      margin-left: -1.1875em;
-    }
+		img {
+			background-color: white;
+			height: 2rem;
+			width: 2rem;
+			border-style: solid;
+			border-width: 0.125rem;
+			border-radius: 100%;
+			margin-left: -1.1875em;
+		}
 
-    h1 {
-      font-size: 1rem;
-      margin: 0;
-      margin-bottom: 0.5rem;
-      margin-top: 0.5rem;
-    }
+		h1 {
+			font-size: 1rem;
+			margin: 0;
+			margin-bottom: 0.5rem;
+			margin-top: 0.5rem;
+		}
 
-    h2 {
-      font-size: 0.8rem;
-      margin: 0;
-    }
+		h2 {
+			font-size: 0.8rem;
+			margin: 0;
+		}
 
-    header p {
-      font-size: 0.8rem;
-    }
-  }
-
-  @media (max-width: 500px) {
-    > li:has(+ li) {
-      border-left: 0;
-      padding-bottom: 1rem;
-    }
-
-    article {
-      img {
-        background-color: white;
-        height: 2rem;
-        width: 2rem;
-        border-style: solid;
-        border-width: 0.125rem;
-        border-radius: 100%;
-        margin-left: 0;
-      }
-    }
-  }
+		header p {
+			font-size: 0.8rem;
+		}
+	}
 }
 
 .about {
-  display: flex;
-  gap: 1rem;
+	display: flex;
+	gap: 1rem;
 
-  .profile {
-    display: flex;
-    align-items: center;
-    max-width: 20%;
-  }
+	.profile {
+		display: flex;
+		align-items: center;
+		max-width: 20%;
+	}
 
-  img {
-    width: 100%;
-    border-radius: 10%;
-    border: 0.125rem solid;
-  }
+	img {
+		width: 100%;
+		border-radius: 10%;
+		border: 0.125rem solid;
+	}
 }
 
 aside {
-  font-size: 0.8em;
-  font-style: italic;
+	font-size: 0.8em;
+	font-style: italic;
 }

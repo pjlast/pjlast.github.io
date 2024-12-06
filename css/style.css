@@ -139,18 +139,15 @@ ul.writing {
 	}
 }
 
-.about {
+.profile-summary {
 	display: flex;
 	gap: 1rem;
 
-	.profile {
-		display: flex;
-		align-items: center;
-		max-width: 20%;
-	}
-
 	img {
-		width: 100%;
+    max-width: 150px;
+    max-height: 150px;
+    height: auto;
+    width: auto;
 		border-radius: 10%;
 		border: 0.125rem solid;
 	}

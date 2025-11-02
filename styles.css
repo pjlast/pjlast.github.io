@@ -1,0 +1,19 @@
+body {
+	background-color: #f9f5d7;
+	color: #3c3836;
+
+	a {
+		color: #458588;
+	}
+
+	a:visited {
+		color: #b16286;
+	}
+}
+
+@media (prefers-color-scheme: dark) {
+	body {
+		background-color: #1d2021;
+		color: #ebdbb2;
+	}
+}

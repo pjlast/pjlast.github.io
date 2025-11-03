@@ -17,7 +17,13 @@
     <main>
       <h1>Welcome!</h1>
 
-      <img src="profile_colored2.png" alt="Petri and his dog">
+      <picture>
+        <source srcset="/profile_colored2_light.png" media="(prefers-color-scheme: light)">
+
+        <source srcset="profile_colored2_dark.png" media="(prefers-color-scheme: dark)">
+
+        <img src="profile_colored2_light.png" alt="Petri and his dog">
+      </picture>
 
       <p>Not sure what I want to do here yet. But thanks for checking in!</p>
 
